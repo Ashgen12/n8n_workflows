@@ -6,7 +6,7 @@ Transform any Telegram message or voice note into a fact-rich, viral LinkedIn po
 
 ## 🌟 Workflow Overview
 
-![Workflow Diagram](attached_image:1)
+![Workflow Diagram](workflow.png)
 
 ---
 
