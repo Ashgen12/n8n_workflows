@@ -6,7 +6,9 @@ Transform your Telegram into an intelligent AI assistant that can handle text, v
 
 ## 🌟 Workflow Overview
 
-![Workflow_Diagram](workflow.png)
+![Workflow Diagram 1](workflow1.png)
+
+![Workflow Diagram 2](workflow2.png)
 
 ***
 
