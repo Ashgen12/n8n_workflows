@@ -77,7 +77,7 @@ Gemini models excel at viral writing, hooking, and professional social content�
 
 - The image should be placed directly after the "Workflow Overview" header for visual clarity and immediate understanding.
 
-![Workflow Diagram](attached_image)
+![Workflow Diagram](attached_image:1)
 
 ## 🛠️ Setup Instructions
 
