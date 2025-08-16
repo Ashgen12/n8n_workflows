@@ -110,7 +110,7 @@ PRs, prompt suggestions, and workflow extensions are welcome! Start a discussion
 
 ## 📄 License
 
-MIT
+APACHE 2.0
 
 ---
 
