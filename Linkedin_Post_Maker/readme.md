@@ -122,4 +122,4 @@ MIT
 
 ## 👤 Author
 
-Built by [Ashgen12]
+Built by ![Ashgen12](https://github.com/Ashgen12/)
