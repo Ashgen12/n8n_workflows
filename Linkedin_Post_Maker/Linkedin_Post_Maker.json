@@ -1,0 +1,495 @@
+{
+  "name": "Linkedin_Post_Maker",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "148984e4-ca27-4d1e-9b57-c8d7b4a41496",
+      "name": "Telegram Trigger",
+      "webhookId": "b50c66ef-2ac0-4682-a1bf-7d7e66e468dc",
+      "credentials": {
+        "telegramApi": {
+          "id": "dazPwvq6d2XWk5Kj",
+          "name": "Ash_Linkedin_Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "48174cf9-906a-4c1b-a5a9-2e7afe2e7f91",
+              "leftValue": "={{ $json.message.chat.id }}",
+              "rightValue": 5013488125,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b5f2727d-e01f-4cb1-8b8d-28b68416374c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "1f9bf6f8-c003-4e49-91f2-5e8736220fef"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9de05bd1-4506-4ea9-a9a8-502fdc0f9569",
+                    "leftValue": "={{ $json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "voice"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        384,
+        -208
+      ],
+      "id": "b00bdc55-2c13-4ac5-8864-4bf5e1909765",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        576,
+        -64
+      ],
+      "id": "653049a2-fde0-4c37-96aa-56e7633e28c4",
+      "name": "Get a file",
+      "webhookId": "d1d914bc-f069-4b55-88b5-b9761943caab",
+      "credentials": {
+        "telegramApi": {
+          "id": "dazPwvq6d2XWk5Kj",
+          "name": "Ash_Linkedin_Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-1.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-1.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        736,
+        16
+      ],
+      "id": "dc14c851-b864-46e5-b016-1e3b7704d461",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "S9czSjF65DLm1fPs",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1da2ad69-2989-471c-a4c0-5b854ea27615",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        -208
+      ],
+      "id": "fedc108d-b4e0-48ec-a3e6-b644fe97762e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "model": "sonar",
+        "messages": {
+          "message": [
+            {
+              "content": "=You are a helpful research assistant. Given a topic,your task is to research the following:\n\n1.Recent statistics and data on [topic] 2025\n  *Finds current numerical insights and datasets.*\n2.Case studies real-world examples [keyword] implementation 2025\n  *Uncovers practical applications and success/ failure\n  stories.*\n3.Expert opinions quotes [keyword) trends chat tenges 2025\n  *Captures authoritative perspectives and emerging\n  developments. *\n4.Competing content analysis comon questions [keyword] 2025\n  *Identifies top-ranking articles and audience pain points.*",
+              "role": "system"
+            },
+            {
+              "content": "=Topic:{{ $json.text }}"
+            }
+          ]
+        },
+        "simplify": true,
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexity",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -208
+      ],
+      "id": "f72f2905-eb55-45b9-91d1-59b64fc14a2a",
+      "name": "Message a Model",
+      "credentials": {
+        "perplexityApi": {
+          "id": "LsQThSZdIeN70vDo",
+          "name": "Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        -16
+      ],
+      "id": "04a4d467-0603-4cdf-9539-6a027d055b3e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "S9czSjF65DLm1fPs",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Topic: {{ $('setTopic').item.json.text }}\nResearch: {{ $json.message }} {{ $json.citations }}\nRemove any markdown formatting",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an expert LinkedIn content strategist specializing in creating viral, high-converting LinkedIn posts. Your task is to transform any given topic and context into a compelling LinkedIn post that drives maximum engagement, builds authority, and generates leads.\n\nCORE PRINCIPLES:\n1. Start with a powerful hook that stops scrolling\n2. Provide valuable, actionable insights\n3. Include data, statistics, or surprising facts when possible\n4. Tell a story or share a personal experience\n5. End with a strong call-to-action that encourages engagement\n\nPOST STRUCTURE:\n1. HOOK (First 1-2 lines): Grab attention immediately\n2. CORE CONTENT: Deliver the main value\n3. SECRET SAUCE: Add unique insights or contrarian viewpoints\n4. PERSONAL TOUCH: Include relatable experiences or observations\n5. CALL-TO-ACTION: Encourage comments, shares, or engagement\n\nPROVEN HOOK FORMULAS:\n- \"X% of [group] don't know [shocking fact]\"\n- \"Everyone talks about [topic], but here's what they miss...\"\n- \"I just discovered [something] and it changed everything\"\n- \"[Number] lessons I learned from [experience]\"\n- \"Stop doing [common practice]. Here's what works instead:\"\n- \"[Surprising statistic] proves [contrarian point]\"\n\nCONTENT GUIDELINES:\n- Keep paragraphs short (1-3 lines max)\n- Use line breaks for visual appeal\n- Include 3-5 key points or lessons\n- Add specific numbers, percentages, or data when available\n- Avoid jargon; write conversationally\n- Make it scannable with clear sections\n- Include actionable takeaways\n\nENGAGEMENT TACTICS:\n- Ask questions to encourage comments\n- Share vulnerable or contrarian opinions\n- Use \"you\" to make it personal\n- Include relevant emojis sparingly\n- End with \"What's your experience?\" or similar\n- Reference current trends or events when relevant\n\nCALL-TO-ACTION OPTIONS:\n- \"What's your take on this?\"\n- \"Have you experienced this too?\"\n- \"Which point resonates most with you?\"\n- \"Share your story in the comments\"\n- \"What would you add to this list?\"\n- \"Agree or disagree? Let me know below\"\n\nTONE & STYLE:\n- Confident but not arrogant\n- Professional yet conversational\n- Helpful and value-driven\n- Authentic and relatable\n- Slightly provocative to spark discussion\n\nOUTPUT REQUIREMENTS:\n- Write ONLY the post content\n- No headers, titles, or metadata\n- No markdown formatting (no asterisks, hashtags for formatting)\n- 150-300 words optimal length\n- End with a clear, engaging question or CTA\n- Make every line count - no fluff\n\nRemember: The goal is to create content that stops the scroll, provides genuine value, builds authority, and generates meaningful engagement that converts viewers into followers and potential business opportunities.\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1600,
+        -208
+      ],
+      "id": "34b8e466-f212-4f59-b67b-f8d67a2a68b2",
+      "name": "Post Writer"
+    },
+    {
+      "parameters": {
+        "person": "JHvwkgppUR",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        -208
+      ],
+      "id": "8760d963-55f4-436d-8d46-13de4b08ec47",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "dwfFCAwnUIzOB7kp",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.content.parts[0].text }}",
+        "translateTo": "en"
+      },
+      "type": "n8n-nodes-base.googleTranslate",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -32
+      ],
+      "id": "20a57a63-197d-41b4-bd59-e1eade5370e6",
+      "name": "Translate a language",
+      "credentials": {
+        "googleTranslateOAuth2Api": {
+          "id": "i6iKdvukXzXpKt3V",
+          "name": "Google Translate account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c8c1748d-c8e1-4996-8844-1b792ea11e59",
+              "name": "text",
+              "value": "={{ $json.translatedText }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -208
+      ],
+      "id": "c686ae25-1c48-4a9d-a276-52e669b5bc1f",
+      "name": "setTopic"
+    },
+    {
+      "parameters": {
+        "content": "## ⚙️ How It Works\n\n### 🔁 Message Routing\n\n1. **Telegram Trigger**  \n   - Captures incoming messages from Telegram (can be text, voice, or files).\n\n2. **If Node**  \n   - Checks if the message is from the authorized chat/user (for security).\n   - Only allows your messages to proceed.\n\n3. **Switch Node**  \n   - Routes messages by type:\n     - **Text Message**: Directly sent to editing and post-generation flow.\n     - **Voice Message**: Routed for transcription, then proceeds as text.\n     - *(If adding document support: Document routed to file-type checker)*\n\n4. **Voice Message Handling**  \n   - **Get a File**: Downloads the voice file from Telegram.\n   - **Transcribe a Recording**: Converts audio (e.g., .ogg/.mp3) to text using AI/ASR.\n   - **Translate a Language** (Optional): Translates transcribed text if needed.\n   - **Edit Fields/Set Topic**: Refines and structures info for AI input.\n\n5. **Text Message Handling**  \n   - **Edit Fields/Set Topic**: Directly prepares the message text for AI input.\n\n6. **Message a Model (Gemini/AI Agent)**  \n   - Receives prepared topic/content.\n   - Uses your research-focused, viral LinkedIn system prompt.\n   - AI generates a compelling LinkedIn post, using both input content and built-in strategies/hooks.\n\n7. **Post Writer**  \n   - Further refines post style, formatting, and removes unwanted markdown or headers.\n   - Ensures every post meets viral LinkedIn format.\n\n8. **Create a Post (LinkedIn Node)**  \n   - Publishes the generated post to your LinkedIn account.\n   - No manual intervention required.\n\n",
+        "height": 928,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -656,
+        -432
+      ],
+      "typeVersion": 1,
+      "id": "a76b06aa-0c8d-454d-a37b-a79d26e0e34c",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Translate a language",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "setTopic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a Model": {
+      "main": [
+        [
+          {
+            "node": "Post Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Post Writer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Writer": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate a language": {
+      "main": [
+        [
+          {
+            "node": "setTopic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setTopic": {
+      "main": [
+        [
+          {
+            "node": "Message a Model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a1e1b275-942a-4a5f-862b-0edcdcf6b786",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f4999ccf69c6c4199e1d310cf1185e72aabb1cb5acf648edd259c8d6b3150805"
+  },
+  "id": "680XcyH0CfOkgtmw",
+  "tags": []
+}
