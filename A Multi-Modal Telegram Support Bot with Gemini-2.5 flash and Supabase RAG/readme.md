@@ -38,11 +38,11 @@ Supported documents are then routed using the **Document Router** node, and conv
 
 ### 🧠 RAG via Supabase
 
-Uploaded documents are vectorized using OpenAI Embeddings. Embeddings are stored in Supabase with metadata. On new questions, the chatbot:
+Uploaded documents are vectorized using Gemini Embeddings. Embeddings are stored in Supabase with metadata. On new questions, the chatbot:
 - Extracts question intent
 - Queries Supabase for semantically similar chunks
-- Injects them into the prompt for OpenAI
-- OpenAI generates a grounded response based on actual document content
+- Injects them into the prompt for Gemini
+- Gemini generates a grounded response based on actual document content
 
 5. Response is sent to the Telegram user with content awareness.
 
